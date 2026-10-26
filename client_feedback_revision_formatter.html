@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Feedback & Revision Formatter | Xentro Studios</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #060813; }
+    .font-mono-code { font-family: 'JetBrains Mono', monospace; }
+    .panel-card { background: #0a0e23; border: 1px solid #141b3d; }
+    .panel-card:hover { border-color: #1e2958; }
+    .sub-card { background: #0e1430; border: 1px solid #1a2350; }
+    .sub-card:hover { border-color: #2a377a; }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #060813; }
+    ::-webkit-scrollbar-thumb { background: #1e2958; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #6366f1; }
+  </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-600 selection:text-white antialiased">
+
+  <!-- Header -->
+  <header class="border-b border-[#141a35] bg-[#070a18] px-4 sm:px-6 py-4 sticky top-0 z-40 backdrop-blur">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <!-- Xentro Vector "X" Logo Badge -->
+        <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center p-1.5 shadow-lg shadow-indigo-600/30">
+          <svg viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+            <polygon points="12,15 38,15 50,42 62,15 88,15 62,60 88,105 62,105 50,78 38,105 12,105 38,60" fill="white" />
+          </svg>
+        </div>
+        <div>
+          <span class="font-extrabold text-base tracking-tight text-white">Xentro <span class="text-indigo-400">Studios</span></span>
+          <span class="text-[11px] text-slate-400 font-medium block -mt-1">Create your own dreams</span>
+        </div>
+      </div>
+      <div class="text-[11px] font-semibold text-slate-400 border border-[#19224d] bg-[#090d20] px-3 py-1.5 rounded-lg hidden sm:block">
+        Post-Production Workflow Lab
+      </div>
+    </div>
+  </header>
+
+  <!-- Main View -->
+  <main class="max-w-6xl mx-auto px-4 py-6 sm:py-8 w-full flex-1">
+    
+    <!-- Title Area -->
+    <div class="text-center mb-8">
+      <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Client Feedback & Revision Formatter</h1>
+      <p class="text-xs sm:text-sm text-slate-400 mt-1 max-w-2xl mx-auto">Turn messy client feedback into clean, chronological timeline punch-lists and markers.</p>
+    </div>
+
+    <!-- 2-Column Responsive Workspace -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start max-w-6xl mx-auto">
+      
+      <!-- LEFT COLUMN: Raw Input & Controls -->
+      <div class="lg:col-span-5 space-y-5">
+        
+        <!-- Input Card -->
+        <div class="panel-card rounded-2xl p-5 shadow-xl transition space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-200">RAW CLIENT NOTES</span>
+            <span class="text-[10px] font-semibold text-slate-400 font-mono-code bg-[#060918] border border-[#19224d] px-2 py-0.5 rounded">WhatsApp / Email / Slack</span>
+          </div>
+
+          <textarea id="raw-input" rows="11" placeholder="Paste messy notes here...
+Examples:
+- at 1:14 make the text bigger and change font to bold
+- 00:45 music is too loud over voiceover
+- around 2.10 cut that awkward breath
+- @03:15 color grade looks too green on the skin
+- 45s typo in subtitle: 'recieve' to 'receive'
+- 02:15-02:30 speed up this B-roll sequence" class="w-full bg-[#060918] border border-[#1a2350] focus:border-indigo-500 rounded-xl p-3.5 text-xs text-slate-200 placeholder-slate-600 outline-none transition font-mono-code leading-relaxed resize-none"></textarea>
+
+          <!-- Buttons -->
+          <div class="grid grid-cols-2 gap-2">
+            <button id="btn-sample" type="button" class="py-2 px-3 bg-[#0e1430] hover:bg-[#141b3d] border border-[#1a2350] hover:border-[#2a377a] rounded-xl text-xs font-bold text-slate-300 transition text-center cursor-pointer flex items-center justify-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              Load Sample Notes
+            </button>
+            <button id="btn-parse" type="button" class="py-2 px-3 bg-indigo-600 hover:bg-indigo-500 text-white border border-indigo-500 rounded-xl text-xs font-bold shadow-lg shadow-indigo-600/30 transition text-center cursor-pointer flex items-center justify-center gap-1.5">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              Parse & Sort Timeline
+            </button>
+          </div>
+        </div>
+
+        <!-- Parser & Timeline Settings -->
+        <div class="panel-card rounded-2xl p-5 shadow-xl transition space-y-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-200 block">EXPORT & TIMELINE SETTINGS</span>
+          
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-400 mb-1">Timeline FPS (Marker Sync)</label>
+              <select id="fps-select" class="w-full bg-[#060918] border border-[#1a2350] focus:border-indigo-500 rounded-xl px-2.5 py-2 font-mono-code text-slate-200 text-xs outline-none cursor-pointer">
+                <option value="23.976">23.976 fps</option>
+                <option value="24" selected>24 fps (Cinema)</option>
+                <option value="25">25 fps (PAL / UK)</option>
+                <option value="29.97">29.97 fps (NTSC)</option>
+                <option value="30">30 fps (Web / Social)</option>
+                <option value="50">50 fps</option>
+                <option value="59.94">59.94 fps</option>
+                <option value="60">60 fps (Gaming/High)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-400 mb-1">Client Name / Project Ref</label>
+              <input id="client-name-input" type="text" value="Client Cut V1" placeholder="e.g. Nike Commercial V2" class="w-full bg-[#060918] border border-[#1a2350] focus:border-indigo-500 rounded-xl px-3 py-2 text-slate-200 text-xs outline-none" />
+            </div>
+          </div>
+
+          <div class="pt-2 border-t border-[#141b3d] flex items-center justify-between text-[11px] text-slate-400">
+            <span>Auto-Categories detected:</span>
+            <div class="flex gap-1.5 font-semibold text-[10px]">
+              <span class="px-1.5 py-0.5 rounded bg-blue-950/70 text-blue-400 border border-blue-800/40">Text</span>
+              <span class="px-1.5 py-0.5 rounded bg-amber-950/70 text-amber-400 border border-amber-800/40">Audio</span>
+              <span class="px-1.5 py-0.5 rounded bg-purple-950/70 text-purple-400 border border-purple-800/40">Cut</span>
+              <span class="px-1.5 py-0.5 rounded bg-pink-950/70 text-pink-400 border border-pink-800/40">Color</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: Structured Punch-List & Progress Tracker -->
+      <div class="lg:col-span-7 space-y-5">
+        
+        <!-- Progress Bar Card -->
+        <div class="panel-card rounded-2xl p-5 shadow-xl transition">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-300">REVISION COMPLETION PROGRESS</span>
+            <span id="progress-text" class="text-xs font-bold font-mono-code text-indigo-400">0 of 0 addressed (0%)</span>
+          </div>
+
+          <!-- Progress track -->
+          <div class="w-full h-2.5 bg-[#060918] rounded-full overflow-hidden p-0.5 border border-[#141b3d]">
+            <div id="progress-bar" style="width: 0%;" class="h-full bg-gradient-to-r from-indigo-500 to-emerald-400 rounded-full transition-all duration-300"></div>
+          </div>
+
+          <!-- Quick Filters -->
+          <div class="mt-4 pt-3 border-t border-[#141b3d] flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div class="flex items-center gap-1.5">
+              <span class="text-slate-500 text-[11px]">Filter:</span>
+              <button type="button" class="filter-btn px-2.5 py-1 rounded-lg bg-indigo-600 text-white text-[11px] font-semibold cursor-pointer transition" data-filter="all">All</button>
+              <button type="button" class="filter-btn px-2.5 py-1 rounded-lg bg-[#0e1430] hover:bg-[#141b3d] text-slate-400 hover:text-white text-[11px] font-semibold border border-[#1a2350] cursor-pointer transition" data-filter="pending">Pending</button>
+              <button type="button" class="filter-btn px-2.5 py-1 rounded-lg bg-[#0e1430] hover:bg-[#141b3d] text-slate-400 hover:text-white text-[11px] font-semibold border border-[#1a2350] cursor-pointer transition" data-filter="done">Completed</button>
+            </div>
+            <button id="btn-mark-all" type="button" class="text-indigo-400 hover:text-indigo-300 font-semibold text-[11px] cursor-pointer transition">
+              Mark All as Complete
+            </button>
+          </div>
+        </div>
+
+        <!-- Punch-List Items Container -->
+        <div class="panel-card rounded-2xl p-5 shadow-xl transition space-y-3">
+          <div class="flex items-center justify-between border-b border-[#141b3d] pb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-200">CHRONOLOGICAL PUNCH-LIST</span>
+              <span id="items-count-badge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-950/70 text-indigo-400 border border-indigo-700/50 font-mono-code">0 Items</span>
+            </div>
+            <span class="text-[11px] text-slate-500">Click timecode to copy for NLE playhead</span>
+          </div>
+
+          <!-- Empty State -->
+          <div id="empty-state" class="py-12 flex flex-col items-center justify-center text-center">
+            <div class="w-12 h-12 rounded-full bg-[#0e1430] border border-[#1a2350] flex items-center justify-center text-indigo-400 mb-3">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+            </div>
+            <h4 class="text-sm font-bold text-slate-200">No revisions parsed yet</h4>
+            <p class="text-xs text-slate-500 mt-1 max-w-sm">Paste notes on the left and click "Parse & Sort Timeline" or hit "Load Sample Notes".</p>
+          </div>
+
+          <!-- Dynamic List Container -->
+          <div id="punch-list" class="space-y-2.5 max-h-[480px] overflow-y-auto pr-1"></div>
+        </div>
+
+        <!-- Utility Export Actions -->
+        <div class="panel-card rounded-2xl p-5 shadow-xl transition space-y-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-200 block">EXPORT & SHARING ACTIONS</span>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <!-- Download CSV Markers -->
+            <button id="btn-export-csv" type="button" class="py-2.5 px-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-indigo-600/30 transition flex items-center justify-center gap-1.5 cursor-pointer">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              <span>Markers (.CSV)</span>
+            </button>
+
+            <!-- Copy Client Reply Email -->
+            <button id="btn-copy-reply" type="button" class="py-2.5 px-3 bg-[#0e1430] hover:bg-[#141b3d] border border-[#1a2350] hover:border-[#2a377a] rounded-xl text-xs font-bold text-slate-200 transition flex items-center justify-center gap-1.5 cursor-pointer">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              <span id="reply-btn-text">Copy Client Reply</span>
+            </button>
+
+            <!-- Copy Markdown -->
+            <button id="btn-copy-markdown" type="button" class="py-2.5 px-3 bg-[#0e1430] hover:bg-[#141b3d] border border-[#1a2350] hover:border-[#2a377a] rounded-xl text-xs font-bold text-slate-200 transition flex items-center justify-center gap-1.5 cursor-pointer">
+              <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+              <span id="md-btn-text">Copy Markdown / List</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Sticky Bottom Community Callout -->
+  <div class="max-w-6xl mx-auto px-4 pb-6 w-full">
+    <div class="rounded-2xl panel-card p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-black border border-slate-700 flex items-center justify-center p-1.5">
+          <svg viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+            <polygon points="12,15 38,15 50,42 62,15 88,15 62,60 88,105 62,105 50,78 38,105 12,105 38,60" fill="white" />
+          </svg>
+        </div>
+        <div>
+          <h4 class="text-xs font-bold text-white">Xentro Editor Council</h4>
+          <p class="text-[11px] text-slate-400">Join 500+ video editors sharing motion presets, project critiques, and freelance tips.</p>
+        </div>
+      </div>
+      <a href="https://chat.whatsapp.com/JRh8GHhmmwk9DzIK13NjHy" target="_blank" rel="noopener noreferrer" class="whitespace-nowrap px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg transition">
+        Join Xentro Community Free →
+      </a>
+    </div>
+  </div>
+
+  <!-- Toast Notification Box -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-2 bg-[#0e1430] border border-indigo-500 text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-2xl">
+    <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+    <span id="toast-text">Timecode copied to clipboard!</span>
+  </div>
+
+  <!-- JavaScript Logic -->
+  <script>
+    // In-memory items array
+    let items = [];
+    let currentFilter = 'all';
+
+    const SAMPLE_RAW_TEXT = 
+`at 1:14 make the text bigger and change font to bold
+around 0:45 music is way too loud over voiceover, lower by -4dB
+00:01:23 please cut that awkward breath/pause between sentences
+2.10 color grade looks too green on the speaker's face, warm it up
+45s typo in subtitle: change 'recieve' to 'receive'
+@02:15-02:30 speed up this B-roll montage, feels dragged out
+around 03:05 add sound effect for logo animation
+general note: export in 4K when delivering final cut!`;
+
+    // DOM Elements
+    const rawInput = document.getElementById('raw-input');
+    const btnSample = document.getElementById('btn-sample');
+    const btnParse = document.getElementById('btn-parse');
+    const punchList = document.getElementById('punch-list');
+    const emptyState = document.getElementById('empty-state');
+    const progressText = document.getElementById('progress-text');
+    const progressBar = document.getElementById('progress-bar');
+    const itemsCountBadge = document.getElementById('items-count-badge');
+    const btnMarkAll = document.getElementById('btn-mark-all');
+    const fpsSelect = document.getElementById('fps-select');
+    const clientNameInput = document.getElementById('client-name-input');
+    const btnExportCsv = document.getElementById('btn-export-csv');
+    const btnCopyReply = document.getElementById('btn-copy-reply');
+    const btnCopyMarkdown = document.getElementById('btn-copy-markdown');
+    const replyBtnText = document.getElementById('reply-btn-text');
+    const mdBtnText = document.getElementById('md-btn-text');
+    const toast = document.getElementById('toast');
+    const toastText = document.getElementById('toast-text');
+
+    // Toast Trigger
+    function showToast(message) {
+      toastText.textContent = message;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 2200);
+    }
+
+    // Helper: Copy Text fallback for iframes
+    function copyToClipboard(text, successMsg) {
+      const temp = document.createElement('textarea');
+      temp.value = text;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand('copy');
+      document.body.removeChild(temp);
+      showToast(successMsg);
+    }
+
+    // Smart Category Detector
+    function detectCategory(text) {
+      const lower = text.toLowerCase();
+      if (/text|title|font|typo|subtitle|caption|lower third|spelling|graphic|logo/.test(lower)) {
+        return { name: 'Graphics/Text', color: 'bg-blue-950/70 text-blue-400 border-blue-800/40', markerColor: 'Cyan' };
+      }
+      if (/music|audio|volume|loud|sfx|sound|voice|mic|bgm|track/.test(lower)) {
+        return { name: 'Audio/Music', color: 'bg-amber-950/70 text-amber-400 border-amber-800/40', markerColor: 'Green' };
+      }
+      if (/cut|trim|pause|breath|pacing|speed|slow|b-roll|montage|clip|jump|transition/.test(lower)) {
+        return { name: 'Cut/Pacing', color: 'bg-purple-950/70 text-purple-400 border-purple-800/40', markerColor: 'Blue' };
+      }
+      if (/color|grade|lut|green|warm|dark|bright|exposure|skin|saturation/.test(lower)) {
+        return { name: 'Color/Grade', color: 'bg-pink-950/70 text-pink-400 border-pink-800/40', markerColor: 'Magenta' };
+      }
+      return { name: 'General/Fix', color: 'bg-slate-800/70 text-slate-300 border-slate-700/50', markerColor: 'Yellow' };
+    }
+
+    // Convert seconds to Timecode HH:MM:SS:FF
+    function secondsToTimecode(totalSecs, fps) {
+      const h = Math.floor(totalSecs / 3600);
+      const m = Math.floor((totalSecs % 3600) / 60);
+      const s = Math.floor(totalSecs % 60);
+      const remainder = totalSecs - Math.floor(totalSecs);
+      const frames = Math.floor(remainder * fps);
+
+      const hh = String(h).padStart(2, '0');
+      const mm = String(m).padStart(2, '0');
+      const ss = String(s).padStart(2, '0');
+      const ff = String(frames).padStart(2, '0');
+      return `${hh}:${mm}:${ss}:${ff}`;
+    }
+
+    // Clean Timecode format MM:SS
+    function formatTimecodeDisplay(totalSecs) {
+      const m = Math.floor(totalSecs / 60);
+      const s = Math.floor(totalSecs % 60);
+      return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    // Smart Line Parser
+    function parseRawText(raw) {
+      const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+      const parsed = [];
+
+      // Regex matching timecodes:
+      // Examples: 01:23:45, 01:23, 1:23, 1.23, @0:45, 45s, 01m23s, 02:15-02:30
+      const timeRegex = /(?:@|\bat\s+)?(\b\d{1,2}[:.]\d{2}(?:[:.]\d{2})?|\b\d{1,2}m\d{1,2}s|\b\d{1,3}s)(?:-(\d{1,2}[:.]\d{2}))?/i;
+
+      lines.forEach((line, idx) => {
+        let seconds = null;
+        let displayTc = '--:--';
+        let cleanNote = line;
+
+        const match = line.match(timeRegex);
+        if (match) {
+          const rawMatch = match[1];
+          let matchedSeconds = 0;
+
+          if (rawMatch.includes(':')) {
+            const parts = rawMatch.split(':').map(Number);
+            if (parts.length === 3) matchedSeconds = (parts[0] * 3600) + (parts[1] * 60) + parts[2];
+            else if (parts.length === 2) matchedSeconds = (parts[0] * 60) + parts[1];
+          } else if (rawMatch.includes('.')) {
+            const parts = rawMatch.split('.').map(Number);
+            if (parts.length === 2) matchedSeconds = (parts[0] * 60) + parts[1];
+          } else if (rawMatch.toLowerCase().includes('m')) {
+            const mParts = rawMatch.toLowerCase().split('m');
+            const mins = parseInt(mParts[0]) || 0;
+            const secs = parseInt(mParts[1].replace('s', '')) || 0;
+            matchedSeconds = (mins * 60) + secs;
+          } else if (rawMatch.toLowerCase().endsWith('s')) {
+            matchedSeconds = parseInt(rawMatch.replace(/[^0-9]/g, '')) || 0;
+          }
+
+          seconds = matchedSeconds;
+          displayTc = formatTimecodeDisplay(matchedSeconds);
+
+          // Remove the time string from note text for clean presentation
+          cleanNote = line
+            .replace(match[0], '')
+            .replace(/^[-–—:,.\s]+/, '')
+            .replace(/around|please|at\b/gi, '')
+            .trim();
+          
+          if (!cleanNote) cleanNote = line; // Fallback
+        } else {
+          // General notes without timecode placed at the end
+          seconds = 999999;
+          displayTc = 'GENERAL';
+          cleanNote = line.replace(/^[-*•]\s*/, '').trim();
+        }
+
+        parsed.push({
+          id: 'item_' + Date.now() + '_' + idx,
+          seconds: seconds,
+          displayTc: displayTc,
+          originalText: line,
+          note: cleanNote.charAt(0).toUpperCase() + cleanNote.slice(1),
+          category: detectCategory(line),
+          done: false,
+          priority: /urgent|asap|important|must/i.test(line)
+        });
+      });
+
+      // Sort chronologically by timeline seconds
+      parsed.sort((a, b) => a.seconds - b.seconds);
+      return parsed;
+    }
+
+    // Render Punch-List
+    function renderList() {
+      punchList.innerHTML = '';
+
+      const filteredItems = items.filter(item => {
+        if (currentFilter === 'pending') return !item.done;
+        if (currentFilter === 'done') return item.done;
+        return true;
+      });
+
+      if (filteredItems.length === 0) {
+        emptyState.classList.remove('hidden');
+        if (items.length > 0) {
+          emptyState.querySelector('h4').textContent = 'No matching revisions';
+          emptyState.querySelector('p').textContent = 'Try toggling filter back to "All".';
+        } else {
+          emptyState.querySelector('h4').textContent = 'No revisions parsed yet';
+          emptyState.querySelector('p').textContent = 'Paste notes on the left and click "Parse & Sort Timeline" or hit "Load Sample Notes".';
+        }
+      } else {
+        emptyState.classList.add('hidden');
+      }
+
+      filteredItems.forEach(item => {
+        const row = document.createElement('div');
+        row.className = `sub-card rounded-xl p-3.5 transition flex items-start gap-3 group ${item.done ? 'opacity-60 bg-[#070b1c]' : ''}`;
+
+        row.innerHTML = `
+          <!-- Custom Checkbox -->
+          <button type="button" class="btn-toggle-done mt-0.5 w-5 h-5 rounded-md border flex items-center justify-center transition cursor-pointer ${item.done ? 'bg-emerald-600 border-emerald-500 text-white' : 'border-slate-600 hover:border-indigo-400 bg-[#060918]'}" data-id="${item.id}">
+            <svg class="w-3.5 h-3.5 ${item.done ? 'block' : 'hidden'}" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          </button>
+
+          <!-- Middle Content -->
+          <div class="flex-1 min-w-0">
+            <div class="flex flex-wrap items-center gap-2 mb-1">
+              <!-- Timecode Pill (Click to copy) -->
+              <button type="button" class="btn-copy-tc font-mono-code text-[11px] font-bold px-2 py-0.5 rounded bg-indigo-950/80 hover:bg-indigo-900 text-indigo-300 border border-indigo-700/60 transition cursor-pointer flex items-center gap-1" data-tc="${item.displayTc}">
+                <span>${item.displayTc}</span>
+                <svg class="w-2.5 h-2.5 opacity-60 group-hover:opacity-100" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+              </button>
+
+              <!-- Category Badge -->
+              <span class="text-[10px] font-semibold px-2 py-0.5 rounded border ${item.category.color}">
+                ${item.category.name}
+              </span>
+
+              ${item.priority ? '<span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800">PRIORITY</span>' : ''}
+            </div>
+
+            <p class="text-xs text-slate-200 leading-relaxed break-words ${item.done ? 'line-through text-slate-500' : ''}">
+              ${item.note}
+            </p>
+          </div>
+
+          <!-- Priority Star Toggle -->
+          <button type="button" class="btn-star text-slate-600 hover:text-amber-400 transition cursor-pointer p-1" data-id="${item.id}">
+            <svg class="w-4 h-4 ${item.priority ? 'text-amber-400 fill-amber-400' : ''}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+            </svg>
+          </button>
+        `;
+
+        punchList.appendChild(row);
+      });
+
+      updateProgress();
+    }
+
+    // Progress Bar Calculation
+    function updateProgress() {
+      const total = items.length;
+      const completed = items.filter(i => i.done).length;
+      const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+      progressText.textContent = `${completed} of ${total} addressed (${pct}%)`;
+      progressBar.style.width = `${pct}%`;
+      itemsCountBadge.textContent = `${total} Items`;
+
+      if (total > 0 && completed === total) {
+        btnMarkAll.textContent = 'Reset All Status';
+      } else {
+        btnMarkAll.textContent = 'Mark All as Complete';
+      }
+    }
+
+    // Toggle Checkbox Status
+    punchList.addEventListener('click', (e) => {
+      const toggleBtn = e.target.closest('.btn-toggle-done');
+      if (toggleBtn) {
+        const id = toggleBtn.dataset.id;
+        const item = items.find(i => i.id === id);
+        if (item) {
+          item.done = !item.done;
+          renderList();
+        }
+        return;
+      }
+
+      // Copy Timecode
+      const copyBtn = e.target.closest('.btn-copy-tc');
+      if (copyBtn) {
+        const tc = copyBtn.dataset.tc;
+        if (tc !== 'GENERAL') {
+          copyToClipboard(tc, `Timecode ${tc} copied!`);
+        }
+        return;
+      }
+
+      // Toggle Star Priority
+      const starBtn = e.target.closest('.btn-star');
+      if (starBtn) {
+        const id = starBtn.dataset.id;
+        const item = items.find(i => i.id === id);
+        if (item) {
+          item.priority = !item.priority;
+          renderList();
+        }
+      }
+    });
+
+    // Parse Handler
+    btnParse.addEventListener('click', () => {
+      const text = rawInput.value.trim();
+      if (!text) {
+        showToast('Please paste some client notes first!');
+        return;
+      }
+      items = parseRawText(text);
+      renderList();
+      showToast(`Parsed ${items.length} revisions in timeline order.`);
+    });
+
+    // Sample Notes Handler
+    btnSample.addEventListener('click', () => {
+      rawInput.value = SAMPLE_RAW_TEXT;
+      items = parseRawText(SAMPLE_RAW_TEXT);
+      renderList();
+      showToast('Sample notes loaded and parsed!');
+    });
+
+    // Mark All Handler
+    btnMarkAll.addEventListener('click', () => {
+      if (items.length === 0) return;
+      const allDone = items.every(i => i.done);
+      items.forEach(i => i.done = !allDone);
+      renderList();
+    });
+
+    // Filter Buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => {
+          b.className = 'filter-btn px-2.5 py-1 rounded-lg bg-[#0e1430] hover:bg-[#141b3d] text-slate-400 hover:text-white text-[11px] font-semibold border border-[#1a2350] cursor-pointer transition';
+        });
+        btn.className = 'filter-btn px-2.5 py-1 rounded-lg bg-indigo-600 text-white text-[11px] font-semibold cursor-pointer transition';
+        currentFilter = btn.dataset.filter;
+        renderList();
+      });
+    });
+
+    // EXPORT 1: Premiere Pro / DaVinci Resolve Marker CSV
+    btnExportCsv.addEventListener('click', () => {
+      if (items.length === 0) {
+        showToast('No revisions to export!');
+        return;
+      }
+
+      const fps = parseFloat(fpsSelect.value) || 24;
+      const projectName = (clientNameInput.value.trim() || 'Client_Revision').replace(/[^a-zA-Z0-9_-]/g, '_');
+
+      // CSV Header for Premiere / DaVinci Resolve Marker List
+      let csvContent = 'Marker Name,In,Out,Duration,Marker Type,Description\n';
+
+      items.forEach((item, idx) => {
+        if (item.seconds < 999999) {
+          const inTc = secondsToTimecode(item.seconds, fps);
+          const outTc = secondsToTimecode(item.seconds + 1, fps); // 1 sec duration default
+          const name = `Rev #${idx + 1} [${item.category.name}]`;
+          const desc = item.note.replace(/"/g, '""');
+          csvContent += `"${name}","${inTc}","${outTc}","00:00:01:00","${item.category.markerColor}","${desc}"\n`;
+        }
+      });
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `${projectName}_Markers_${fps}fps.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('Timeline markers (.CSV) downloaded!');
+    });
+
+    // EXPORT 2: Professional Client Reply Email Formatter
+    btnCopyReply.addEventListener('click', () => {
+      if (items.length === 0) {
+        showToast('No revisions to format!');
+        return;
+      }
+
+      const projectRef = clientNameInput.value.trim() || 'your video cut';
+      const completedList = items.map((i, idx) => {
+        const status = i.done ? '✓ Completed' : '• In progress';
+        return `${idx + 1}. [${i.displayTc}] ${i.note} - ${status}`;
+      }).join('\n');
+
+      const emailBody = 
+`Hi Team,
+
+I have updated the timeline according to your feedback for ${projectRef}. Here is the complete revision punch-list breakdown:
+
+${completedList}
+
+A new review render has been exported with all changes applied. Please let me know if you would like any minor polishes!
+
+Best regards,
+Xentro Studios`;
+
+      copyToClipboard(emailBody, 'Polished client reply email copied!');
+      replyBtnText.textContent = 'Copied!';
+      setTimeout(() => replyBtnText.textContent = 'Copy Client Reply', 2000);
+    });
+
+    // EXPORT 3: Markdown / Clean Text Exporter (Notion / ClickUp)
+    btnCopyMarkdown.addEventListener('click', () => {
+      if (items.length === 0) {
+        showToast('No revisions to format!');
+        return;
+      }
+
+      const projectRef = clientNameInput.value.trim() || 'Client Revisions';
+      const mdList = items.map((i) => {
+        const check = i.done ? '[x]' : '[ ]';
+        return `- ${check} **${i.displayTc}** \`${i.category.name}\` - ${i.note}`;
+      }).join('\n');
+
+      const markdownText = `## 🎬 Revision Checklist: ${projectRef}\n\n${mdList}\n\n*Created via Xentro Studios Tools*`;
+
+      copyToClipboard(markdownText, 'Markdown checklist copied!');
+      mdBtnText.textContent = 'Copied!';
+      setTimeout(() => mdBtnText.textContent = 'Copy Markdown / List', 2000);
+    });
+
+    // Initial Load: Load sample automatically so user immediately sees live UI
+    rawInput.value = SAMPLE_RAW_TEXT;
+    items = parseRawText(SAMPLE_RAW_TEXT);
+    renderList();
+  </script>
+</body>
+</html>
